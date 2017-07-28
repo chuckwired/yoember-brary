@@ -2,35 +2,35 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 
-  emailIsValid: Ember.computed.match('model.email', /^.+@.+\..+$/),
-  messageIsValid: Ember.computed.gte('model.message.length', 5),
+  // Data
+  email: '',
+  message: '',
 
-  // This can also be written as:
-  isNotDisabled: Ember.computed.and('emailIsValid', 'messageIsValid'),
-  // isDisabled: Ember.computed('emailIsValid', 'messageIsValid', function() {
-  //   return !(this.get('emailIsValid') && this.get('messageIsValid'))
-  // }),
+  // Validation
+  emailIsValid: Ember.computed.match('email', /^.+@.+\..+$/),
+  messageIsValid: Ember.computed.gte('message.length', 5),
+  detailsValid: Ember.computed.and('emailIsValid', 'messageIsValid'),
+
+  // UI States
+  isDisabled: Ember.computed.not('detailsValid'),
 
   actions: {
 
-    sendMessage(newMessage) {
-      newMessage.save().then(response => {
-        this.set(
-          'confirmationMessage',
-          `Thanks for your enquiry. We'll get back to you as soon as possible using this email address: ${this.model.get('email')}`
-        )
+    sendMessage() {
+      const email = this.get('email')
+      const message = this.get('message')
+      const newContact = this.store.createRecord('contact', { email: email, message: message });
 
-        // TODO: empty the contact fields
+      newContact.save().then(response => {
 
-        //debugging
-        // this.set('model')
-        console.log(`Got response: ${response}`)
-        console.log(`model...`)
-        console.log(this.model)
-        // const blankModel = this.model() // i.e. the route/contact.js
-        // this.set('model', blankModel)
-        // this.reopen()
-        // this.model.destroyRecord()
+        console.log(`Saved with ID: ${response.get('id')}`)
+
+        this.setProperties({
+          confirmationMessage: `Thanks for your enquiry. We'll get back to you as soon as possible using this email address: ${this.get('email')}`,
+          email: '',
+          message: ''
+        })
+
       });
     }
   }

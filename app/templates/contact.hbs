@@ -11,12 +11,12 @@
 
   <div class="form-horizontal form-group form-group-lg row">
     <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-1 col-md-5 col-md-offset-2">
-        {{input type="email" value=model.email class="form-control" placeholder="Your e-mail address." autofocus="autofocus"}}
+        {{input type="email" value=email class="form-control" placeholder="Your e-mail address." autofocus="autofocus"}}
         <br/>
-        {{textarea value=model.message class="form-control" rows=7 placeholder="Your message (at least 5 characters long)"}}
+        {{textarea value=message class="form-control" rows=7 placeholder="Your message (at least 5 characters long)"}}
     </div>
     <div class="col-xs-10 col-xs-offset-1 col-sm-offset-0 col-sm-4 col-md-3">
-        <button disabled={{isDisabled}} class="btn btn-primary btn-lg btn-block" {{action 'sendMessage' model}}>Send Message</button>
+        <button disabled={{isDisabled}} class="btn btn-primary btn-lg btn-block" {{action 'sendMessage'}}>Send Message</button>
     </div>
   </div>
 
