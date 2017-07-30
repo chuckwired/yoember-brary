@@ -2,22 +2,36 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
 
-  emailAddress: '',
-  contactMessage: '',
-  emailIsValid: Ember.computed.match('emailAddress', /^.+@.+\..+$/),
-  messageIsValid: Ember.computed.gte('contactMessage.length', 5),
+  // Data
+  email: '',
+  message: '',
 
-  // This can also be written as:
-  // isNotDisabled: Ember.computed.and('emailIsValid', 'messageIsValid')
-  isDisabled: Ember.computed('emailIsValid', 'messageIsValid', function() {
-    return !(this.get('emailIsValid') && this.get('messageIsValid'))
-  }),
+  // Validation
+  emailIsValid: Ember.computed.match('email', /^.+@.+\..+$/),
+  messageIsValid: Ember.computed.gte('message.length', 5),
+  detailsValid: Ember.computed.and('emailIsValid', 'messageIsValid'),
+
+  // UI States
+  isDisabled: Ember.computed.not('detailsValid'),
 
   actions: {
+
     sendMessage() {
-      this.set('confirmationMessage', `Thanks for your enquiry. We'll get back to you as soon as possible using this email address: ${this.get('emailAddress')}`)
-      this.set('emailAddress', '');
-      this.set('contactMessage', '');
+      const email = this.get('email')
+      const message = this.get('message')
+      const newContact = this.store.createRecord('contact', { email: email, message: message });
+
+      newContact.save().then(response => {
+
+        console.log(`Saved with ID: ${response.get('id')}`)
+
+        this.setProperties({
+          confirmationMessage: `Thanks for your enquiry. We'll get back to you as soon as possible using this email address: ${this.get('email')}`,
+          email: '',
+          message: ''
+        })
+
+      });
     }
   }
 });
