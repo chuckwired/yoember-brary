@@ -60,7 +60,10 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    // In our production app we want to fake the data :))
+    ENV['ember-faker'] = {
+      enabled: true
+    }
   }
 
   return ENV;
